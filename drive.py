@@ -44,7 +44,7 @@ class SimplePIController:
 
 
 controller = SimplePIController(0.15, 0.002)
-set_speed = 17
+set_speed = 12
 controller.set_desired(set_speed)
 
 # track 2: speed 12, P 0.15, I .002
@@ -59,6 +59,10 @@ def telemetry(sid, data):
         throttle = data["throttle"]
         # The current speed of the car
         speed = data["speed"]
+
+        # send data for visualization
+        send_visualization(steering_angle, throttle, speed)
+
         # The current image from the center camera of the car
         imgString = data["image"]
         image = Image.open(BytesIO(base64.b64decode(imgString)))
@@ -67,7 +71,7 @@ def telemetry(sid, data):
 
         throttle = controller.update(float(speed))
 
-        print(steering_angle, throttle)
+        # print(steering_angle, throttle)
         send_control(steering_angle, throttle)
 
         # save frame
@@ -92,6 +96,16 @@ def send_control(steering_angle, throttle):
         data={
             'steering_angle': steering_angle.__str__(),
             'throttle': throttle.__str__()
+        },
+        skip_sid=True)
+
+def send_visualization(steering_angle, throttle, speed):
+    sio.emit(
+        "visualization",
+        data={
+            'steering_angle': steering_angle.__str__(),
+            'throttle': throttle.__str__(),
+            'speed': speed.__str__()
         },
         skip_sid=True)
 

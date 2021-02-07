@@ -2,3 +2,8 @@ data
 tmp
 *.zip
 .ipynb_checkpoints
+.vscode
+run1
+run2
+run1.mp4
+run2.mp4
